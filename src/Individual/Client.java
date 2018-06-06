@@ -16,8 +16,7 @@ public class Client extends Person {
 
 	public Client(String first, String last, int a) {
 		super(first, last, a);
-		id = "" + serial + this.fn.charAt(0) + this.fn.charAt(1) + "_"
-				+ this.ln.charAt(0) + this.ln.charAt(1);
+		id = "" + serial + this.fn.charAt(0) + this.fn.charAt(1) + "_" + this.ln.charAt(0) + this.ln.charAt(1);
 		serial++;
 		ownedBooks = new ArrayList<Books>();
 		cart = new ArrayList<Books>();

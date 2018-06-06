@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import Individual.*;
 import Menu.Driver;
+import Menu.DriverB;
 
 public class Transaction {
 	public boolean Type; // True for Sale, False for Renting
@@ -16,12 +17,10 @@ public class Transaction {
 	private String TrxId;
 
 	public Transaction(boolean t, String idClient, String idEmployee) {
-		emp = Driver.getEmployeeById(idEmployee);
-		customer = Driver.getClientById(idClient);
-		TrxId = "" + serial + emp.getFirstName().charAt(0)
-				+ emp.getFirstName().charAt(1)
-				+ customer.getFirstName().charAt(0)
-				+ customer.getFirstName().charAt(1);
+		emp = DriverB.getEmployeeById(idEmployee);
+		customer = DriverB.getClientById(idClient);
+		TrxId = "" + serial + emp.getFirstName().charAt(0) + emp.getFirstName().charAt(1)
+				+ customer.getFirstName().charAt(0) + customer.getFirstName().charAt(1);
 		serial++;
 		Type = t;
 		date = new Date();

@@ -7,8 +7,7 @@ public class Employee extends Person {
 
 	public Employee(String first, String last, int a, double Salary) {
 		super(first, last, a);
-		id = "" + serial + this.fn.charAt(0) + this.fn.charAt(1) + "_"
-				+ this.ln.charAt(0) + this.ln.charAt(1);
+		id = "" + serial + this.fn.charAt(0) + this.fn.charAt(1) + "_" + this.ln.charAt(0) + this.ln.charAt(1);
 		serial++;
 	}
 
@@ -16,8 +15,8 @@ public class Employee extends Person {
 		super(first, last, a);
 		id = username;
 		this.Salary = Salary;
-		serial=username.charAt(0) - '0';
-		
+		serial = username.charAt(0) - '0';
+
 	}
 
 	public String getID() {
