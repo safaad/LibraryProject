@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 import BookStore.*;
 import Individual.*;
-
+import java.time.LocalDateTime ;
 public class DriverB {
 	public static ArrayList<Client> clients = new ArrayList<Client>();
 	public static Employee empAm, empPm;
@@ -53,7 +53,7 @@ public class DriverB {
 	}
 
 	public static void main(String[] args) {
-		
+		System.out.println(LocalDateTime.now());
 		
 	
 	}
