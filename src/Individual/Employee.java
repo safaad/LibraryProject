@@ -26,4 +26,7 @@ public class Employee extends Person {
 	public void setID(String id) {
 		this.id = id;
 	}
+	public String toString() {
+		return super.toString() + "Employee ID: " + id + "Salary: " + Salary;
+	}
 }
