@@ -6,10 +6,16 @@ public class Adminstrator {
 	private String Password;
 
 	public Adminstrator(String U, String P) {
-		setUsername(U);
-		setPassword(P);
+		Username = U;
+		Password = P;
 	}
-
+	
+	public boolean confirmPassword(String s){
+		if(s.equals(Password))
+			return true;
+		return false;
+	}
+	
 	public String getUsername() {
 		return Username;
 	}
