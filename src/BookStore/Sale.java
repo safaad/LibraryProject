@@ -3,7 +3,7 @@ package BookStore;
 public class Sale extends Books {
 	protected int price, netprice;
 
-	Sale(String t, String a, int i, int target, int p, int netp) {
+	public Sale(String t, String a, int i, int target, int p, int netp) {
 		super(t, a, i, target);
 		price = p;
 		netprice = netp;
@@ -17,4 +17,7 @@ public class Sale extends Books {
 		return netprice;
 	}
 
+	public String toString() {
+		return super.toString();
+	}
 }
