@@ -34,7 +34,7 @@ public class Transaction { // True for Sale, False for Renting
 		String s = "";
 		s+= "Transaction " + TrxId +" on " + date + "\n";
 		s+= "-----------\n";
-		s+= "Employee: " + emp + "\n";
+		s+= "Employee: " + emp.super.toString() + "\n";
 		s+= "Client:" + customer.getId()+ "\n";
 		s+= "---------------------------------\n";
 		s+= "List of bought books: \n";
