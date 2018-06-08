@@ -18,6 +18,6 @@ public class Sale extends Books {
 	}
 
 	public String toString() {
-		return super.toString();
+		return super.toString() +"\n";
 	}
 }

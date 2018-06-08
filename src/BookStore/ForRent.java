@@ -8,15 +8,13 @@ public class ForRent extends Books {
 	private ArrayList<Date> Returned;
 	private Date Deadline;
 	private boolean isRented;
-	private double rentPrice;
 	
-	public ForRent(String title, String author, int isbn, int a, double p){
+	public ForRent(String title, String author, int isbn, int a){
 		super(title, author, isbn, a);
 		Rented = new ArrayList<Date>();
 		Returned = new ArrayList<Date>();
 		Deadline = null;
 		isRented = false;
-		rentPrice = p;
 	}
 	
 	public ArrayList<Date> getRented(){
@@ -43,15 +41,7 @@ public class ForRent extends Books {
 		isRented = k;
 	}
 	
-	public double getRentPrice(){
-		return rentPrice;
-	}
-	
-	public void setRentPrice(double p){
-		rentPrice = p;
-	}
-	
 	public String toString() {
-		return super.toString();
+		return super.toString() + "\n";
 	}
 }

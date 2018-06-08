@@ -1,7 +1,6 @@
 package BookStore;
 
 import java.util.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -34,7 +33,7 @@ public class Transaction { // True for Sale, False for Renting
 		String s = "";
 		s+= "Transaction " + TrxId +" on " + date + "\n";
 		s+= "-----------\n";
-		s+= "Employee: " + emp.super.toString() + "\n";
+		s+= "Employee: " + ((Person) emp).toString() + "\n";
 		s+= "Client:" + customer.getId()+ "\n";
 		s+= "---------------------------------\n";
 		s+= "List of bought books: \n";
