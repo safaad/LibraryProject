@@ -19,4 +19,8 @@ public class Sale extends Books {
 	public String toString() {
 		return super.toString() +"\n";
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 58edee289614ac2a49f51a82605f6d6ca9369374
