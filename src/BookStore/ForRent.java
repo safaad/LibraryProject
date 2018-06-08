@@ -50,4 +50,8 @@ public class ForRent extends Books {
 	public void setRentPrice(double p){
 		rentPrice = p;
 	}
+	
+	public String toString() {
+		return super.toString();
+	}
 }
