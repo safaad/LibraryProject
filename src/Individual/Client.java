@@ -1,6 +1,5 @@
 package Individual;
 
-import java.security.acl.Owner;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,6 +8,10 @@ import BookStore.*;
 import Menu.Driver;
 
 public class Client extends Person {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected String id;
 	protected int purchase = 0;
 	protected ArrayList<Books> ownedBooks;
@@ -20,7 +23,8 @@ public class Client extends Person {
 
 	public Client(String first, String last, int a) {
 		super(first, last, a);
-		id = "" + serial + this.fn.charAt(0) + this.fn.charAt(1) + "_" + this.ln.charAt(0) + this.ln.charAt(1);
+		id = "" + this.fn.charAt(0) + this.ln.charAt(0) + serial;
+		//id = "" + serial + this.fn.charAt(0) + this.fn.charAt(1) + "_" + this.ln.charAt(0) + this.ln.charAt(1);
 		serial++;
 		ownedBooks = new ArrayList<Books>();
 		cart = new ArrayList<Books>();
@@ -31,6 +35,14 @@ public class Client extends Person {
 		id = username;
 		serial = username.charAt(0) - '0';
 
+	}
+	
+	public static void setSerial(int serial2) {
+		serial = serial2;
+	}
+	
+	public static int getSerial() {
+		return serial;
 	}
 
 	public double addToCartSale(Sale b) {
