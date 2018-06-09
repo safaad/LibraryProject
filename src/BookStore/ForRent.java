@@ -8,44 +8,40 @@ public class ForRent extends Books {
 	private ArrayList<Date> Returned;
 	private Date Deadline;
 	private boolean isRented;
-	
-	public ForRent(String title, String author, int isbn, int a){
+
+	public ForRent(String title, String author, int isbn, int a) {
 		super(title, author, isbn, a);
 		Rented = new ArrayList<Date>();
 		Returned = new ArrayList<Date>();
 		Deadline = null;
 		isRented = false;
 	}
-	
-	public ArrayList<Date> getRented(){
+
+	public ArrayList<Date> getRented() {
 		return Rented;
 	}
-	
-	public ArrayList<Date> getReturned(){
+
+	public ArrayList<Date> getReturned() {
 		return Returned;
 	}
-	
-	public Date getDeadline(){
+
+	public Date getDeadline() {
 		return Deadline;
 	}
-	
-	public void setDeadline(Date d){
+
+	public void setDeadline(Date d) {
 		Deadline = d;
 	}
-	
-	public boolean getIsRented(){
+
+	public boolean getIsRented() {
 		return isRented;
 	}
-	
-	public void setIsRented(boolean k){
+
+	public void setIsRented(boolean k) {
 		isRented = k;
 	}
-	
+
 	public String toString() {
 		return super.toString() + "\n";
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 58edee289614ac2a49f51a82605f6d6ca9369374
