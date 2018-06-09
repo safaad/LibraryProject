@@ -1,6 +1,12 @@
 package BookStore;
 
-public class Books {
+import java.io.Serializable;
+
+public class Books implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected String title, author;
 	protected int ISBN;
 	protected int targetsAge;
