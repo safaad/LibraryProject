@@ -3,6 +3,7 @@ package Menu;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import BookStore.*;
@@ -16,17 +17,23 @@ public class Driver {
 	public Integer k;
 	public static Adminstrator admin=new Adminstrator("admin","admin");
 	public static Scanner scan = new Scanner(System.in);
+	public static files LibraryFiles = new files();
 	
 	public static void PrintTransactions(){
+		boolean flag = false;
 		for(Transaction trx : transactions){
 			System.out.println(trx);
 			System.out.println("########################");
+			flag=true;
+		}
+		if(!flag) {
+			System.out.println("No transactions yet!");
 		}
 	}
 	
 	public static void PrintListOfBooks(){
 		boolean flag = false;
-		System.out.println("List of books rented: ");
+		System.out.println("List of books already rented: ");
 		for(Books b : books){
 			if(b instanceof ForRent){
 				System.out.println((ForRent)b);
@@ -38,7 +45,7 @@ public class Driver {
 		else
 			System.out.println("No books available for rent");
 		flag = false;
-		System.out.println("List of bought books: ");
+		System.out.println("List of books for sale: ");
 		for(Books b2 : books){
 			if(b2 instanceof Sale){
 				System.out.println((Sale)b2);
@@ -80,7 +87,12 @@ public class Driver {
 			author = scan.nextLine();
 			System.out.println("Please enter ISBN: ");
 			//scan.nextLine();
-			isbn = scan.nextInt();
+			try {
+				isbn = scan.nextInt();
+			}catch(InputMismatchException e) {
+				System.out.println("Wrong input!\n");
+				return;
+			}
 			System.out.println("Please enter target age: ");
 			//scan.nextLine();
 			targetAge = scan.nextInt();
@@ -90,6 +102,30 @@ public class Driver {
 			}
 			books.add(new ForRent(title, author, isbn, targetAge));
 		}
+		else if(type.equalsIgnoreCase("Sale")) {
+			System.out.println("Please enter title of the book: ");
+			title = scan.nextLine();
+			//scan.nextLine();
+			System.out.println("Please enter author: ");
+			author = scan.nextLine();
+			System.out.println("Please enter ISBN: ");
+			//scan.nextLine();
+			isbn = scan.nextInt();
+			System.out.println("Please enter target age: ");
+			//scan.nextLine();
+			targetAge = scan.nextInt();
+			System.out.println("Please enter the price: ");
+			double price = scan.nextDouble();
+			System.out.println("Please enter the net price: ");
+			double netPrice = scan.nextDouble();
+			if(books.contains(new Sale(title, author, isbn, targetAge, price, netPrice))){
+				System.out.println("This book is already inside the library");
+				return;
+			}
+			books.add(new Sale(title, author, isbn, targetAge, price, netPrice));
+		}
+		else
+			return;
 	}
 	
 	public static void RemoveBook(){
@@ -187,6 +223,7 @@ public class Driver {
 		int a2;
 		
 		System.out.println("Which one do you want to edit? (AM/PM)\n");
+		scan.nextLine();
 		edit = scan.nextLine();
 		if(edit.equalsIgnoreCase("am")){
 			System.out.println("Please enter first name: ");
@@ -218,6 +255,19 @@ public class Driver {
 		}
 	}
 	
+	public static void PrintEmployees() {
+		if(empAm == null && empPm == null) {
+			System.out.println("No employees are currently employed!\n");
+			return;
+		}
+		else if(empAm == null && empPm != null)
+			System.out.println(empPm + "\n");
+		if(empPm == null && empAm != null)
+			System.out.println(empAm + "\n");
+		else
+			System.out.println(empAm + "\n" + empPm + "\n");
+	}
+	
 	public static void  AdminLogin() {
 		int choice = 0;
 		String user;
@@ -247,7 +297,7 @@ public class Driver {
 		}
 		
 		while(login){
-			System.out.println("1-\tCreate Employees\n2-\tAdd books\n3-\tRemove books\n4-\tChange username\n5-\tChange password\n6-\tEdit employee\n7-\tShow transactions\n"
+			System.out.println("1-\tCreate Employees\n2-\tAdd books\n3-\tRemove books\n4-\tChange username\n5-\tChange password\n6-\tEdit employee\n7-\tShow transactions\n8-\tShow employees\n9-\tShow list of books\n"
 					+ "0-\tLogout");
 			choice = scan.nextInt();
 			switch(choice){
@@ -276,16 +326,21 @@ public class Driver {
 			case 7:
 				PrintTransactions();
 				break;
+			case 8:
+				PrintEmployees();
+				break;
+			case 9:
+				PrintListOfBooks();
+			default:
+				break;
 			}
 		}
 	}
 	
 	public static Client ClientSignUp(){
 		System.out.println("Please enter first name: ");
-		scan.nextLine();
 		String fn = scan.nextLine();
 		System.out.println("Please enter last name: ");
-		scan.nextLine();
 		String ln = scan.nextLine();
 		System.out.println("Please enter age: ");
 		int age = scan.nextInt();
@@ -301,10 +356,9 @@ public class Driver {
 		System.out.println("Please enter your id: ");
 		scan.nextLine();
 		id = scan.nextLine();
-		
 		if(getClientById(id) == null){
 			System.out.println("User doesn't exist!\nDo you want to create a new one? (Yes/No)");
-			scan.nextLine();
+			//scan.nextLine();
 			cancer = scan.nextLine();
 			if(cancer.equalsIgnoreCase("yes")){
 				c = ClientSignUp();
@@ -327,7 +381,7 @@ public class Driver {
 			System.out.println("Not logged in!");
 			return;
 		}
-		System.out.println("Hello there out beloved customer " + c);
+		System.out.println("Hello there beloved customer \n" + c.getFirstName() + " " + c.getLastName() + "\nYour ID: " + c.getId());
 		while(login){
 			System.out.println("1-\tBuy a book\n2-\tRent a book\n3-\tShow list of books\n4-\tShow owned books\n5-\tShow list of cart\n6-\tCheckout\n"
 					+ "0-\tLogout");
@@ -413,7 +467,7 @@ public class Driver {
 		System.out.println("** Hello and Welcome! **");
 		int choice;
 		boolean running = true;
-		//SP.read();
+		LibraryFiles.read();
 		while (running) {
 			System.out.print("Login as a\n(1) Admin\t(2) Client: ");
 			choice = scan.nextInt();
@@ -430,7 +484,7 @@ public class Driver {
 				break;
 			}
 		}
-		//SP.save();
+		LibraryFiles.save();
 	}
 
 }
