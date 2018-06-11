@@ -27,26 +27,32 @@ public class files {
 
 	private DataOutputStream sizeOutputStream;
 	private DataInputStream sizeInputStream;
-	
+
 	private ObjectInputStream CRead;
 	private FileInputStream CFileInput;
 	private ObjectOutputStream CWrite;
 	private FileOutputStream CFileOutput;
 
-	public int sizeOfEmployees = 0;
+	private ObjectInputStream TRead;
+	private FileInputStream TFileInput;
+	private ObjectOutputStream TWrite;
+	private FileOutputStream TFileOutput;
+
+	private int sizeOfEmployees = 0;
 	private int sizeOfBooks = 0;
 	private int sizeOfRentedBooks = 0;
 	private int sizeOfClients = 0;
+	private int sizeOfTransactions = 0;
 
 	public boolean initializeSize() {
 		Path p = Paths.get("Size.txt");
-		if(Files.notExists(p))
+		if (Files.notExists(p))
 			return false;
 		try {
 			FileInputStream k = new FileInputStream("Size.txt");
 			sizeInputStream = new DataInputStream(k);
 
-			sizeOfEmployees = sizeInputStream.readInt(); //employees
+			sizeOfEmployees = sizeInputStream.readInt(); // employees
 			sizeInputStream.readChar(); // reads the \n
 			sizeOfClients = sizeInputStream.readInt(); // clients
 			sizeInputStream.readChar(); // reads the \n
@@ -54,14 +60,17 @@ public class files {
 			sizeInputStream.readChar(); // reads the \n
 			sizeOfRentedBooks = sizeInputStream.readInt(); // rented books
 			sizeInputStream.readChar(); // reads the \n
-			
+
 			Employee.setSerial(sizeInputStream.readInt()); // Setting Employee serial to the on in the file
 			sizeInputStream.readChar(); // reads the \n
 			Client.setSerial(sizeInputStream.readInt()); // Setting Client serial to the one in the file
 			sizeInputStream.readChar(); // reads the \n
 			Transaction.setSerial(sizeInputStream.readInt()); // Setting Transaction IDs to the on in the file
 			sizeInputStream.readChar(); // reads the \n
-			if(sizeOfEmployees == 0 && sizeOfClients == 0 && sizeOfBooks == 0 && sizeOfRentedBooks == 0) {
+			
+			sizeOfTransactions = sizeInputStream.readInt(); // Transactions
+			sizeInputStream.readChar();
+			if (sizeOfEmployees == 0 && sizeOfClients == 0 && sizeOfBooks == 0 && sizeOfRentedBooks == 0) {
 				System.out.println("hello");
 				return false;
 			}
@@ -88,7 +97,7 @@ public class files {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		for(Client c : Driver.clients)
+		for (Client c : Driver.clients)
 			try {
 				CWrite.writeObject(c);
 			} catch (IOException e1) {
@@ -117,16 +126,16 @@ public class files {
 			EmpRead = new ObjectInputStream(EmpFileInput);
 			CFileInput = new FileInputStream("Clients");
 			CRead = new ObjectInputStream(CFileInput);
-			
+
 			e = (Employee) EmpRead.readObject();
 			Driver.empAm = (Employee) e;
-			
+
 			e = (Employee) EmpRead.readObject();
 			Driver.empPm = (Employee) e;
 		} catch (IOException | ClassNotFoundException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		for (int i = sizeOfClients; i > 0; i--) {
 			try {
 				e = (Client) CRead.readObject();
@@ -192,7 +201,7 @@ public class files {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void readBooks() {
@@ -210,7 +219,7 @@ public class files {
 		for (int i = sizeOfBooks; i > 0; i--) {
 			try {
 				e = PrRead.readObject();
-				if(e instanceof ForRent)
+				if (e instanceof ForRent)
 					Driver.books.add((ForRent) e);
 				else
 					Driver.books.add((Sale) e);
@@ -221,7 +230,7 @@ public class files {
 		for (int i = sizeOfRentedBooks; i > 0; i--) {
 			try {
 				e = PrRead.readObject();
-				if(e instanceof ForRent)
+				if (e instanceof ForRent)
 					Driver.rentedBooks.add((ForRent) e);
 			} catch (ClassNotFoundException | IOException e2) {
 				e2.printStackTrace();
@@ -249,30 +258,29 @@ public class files {
 		try {
 			FileOutputStream k = new FileOutputStream("Size.txt");
 			sizeOutputStream = new DataOutputStream(k);
-			//The file Size.txt will always start with 0\n0\n0\n
-			/*sizeOutputStream.writeInt(0); // 0 employees
-			sizeOutputStream.writeChar('\n');
-			sizeOutputStream.writeInt(0); // 0 clients
-			sizeOutputStream.writeChar('\n');
-			sizeOutputStream.writeInt(0); // 0 books
-			sizeOutputStream.writeChar('\n');
-			sizeOutputStream.writeInt(0); // 0 rented books
-			sizeOutputStream.writeChar('\n');
-			
-			sizeOutputStream.writeInt(100); //serial Employee
-			sizeOutputStream.writeChar('\n'); // reads the \n
-			sizeOutputStream.writeInt(500); // serial Client
-			sizeOutputStream.writeChar('\n'); // reads the \n
-			sizeOutputStream.writeInt(1); // serial Transaction
-			sizeOutputStream.writeChar('\n'); // reads the \n*/
-			} catch (IOException e) {
+			// The file Size.txt will always start with 0\n0\n0\n
+			/*
+			 * sizeOutputStream.writeInt(0); // 0 employees
+			 * sizeOutputStream.writeChar('\n'); sizeOutputStream.writeInt(0); // 0 clients
+			 * sizeOutputStream.writeChar('\n'); sizeOutputStream.writeInt(0); // 0 books
+			 * sizeOutputStream.writeChar('\n'); sizeOutputStream.writeInt(0); // 0 rented
+			 * books sizeOutputStream.writeChar('\n');
+			 * 
+			 * sizeOutputStream.writeInt(100); //serial Employee
+			 * sizeOutputStream.writeChar('\n'); // reads the \n
+			 * sizeOutputStream.writeInt(500); // serial Client
+			 * sizeOutputStream.writeChar('\n'); // reads the \n
+			 * sizeOutputStream.writeInt(1); // serial Transaction
+			 * sizeOutputStream.writeChar('\n'); // reads the \n
+			 */
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void closeSizeFile() {
 		try {
-			if(sizeInputStream != null) {
+			if (sizeInputStream != null) {
 				sizeInputStream.close();
 			}
 			if (sizeOutputStream != null) {
@@ -283,8 +291,8 @@ public class files {
 			e.printStackTrace();
 		}
 	}
-	
-	public void openClientsFile(){
+
+	public void openClientsFile() {
 		try {
 			CFileOutput = new FileOutputStream("Clients");
 			CWrite = new ObjectOutputStream(CFileOutput);
@@ -292,7 +300,7 @@ public class files {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void closeClientsFile() {
 		try {
 			if (CRead != null) {
@@ -309,13 +317,75 @@ public class files {
 		}
 	}
 
+	public void openTransactionsFile() {
+		try {
+			TFileOutput = new FileOutputStream("Transactions");
+			TWrite = new ObjectOutputStream(TFileOutput);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void readTrxs() {
+		Object t = null;
+		Path p = Paths.get("Transactions");
+		if (Files.notExists(p))
+			return;
+		try {
+			TFileInput = new FileInputStream("Transactions");
+			TRead = new ObjectInputStream(TFileInput);
+		} catch (IOException e1) {
+			return;
+		}
+		for (int i = sizeOfTransactions; i > 0; i--)
+			try {
+				t = TRead.readObject();
+				Driver.transactions.add((Transaction) t);
+			} catch (ClassNotFoundException | IOException e) {
+				e.printStackTrace();
+			}
+	}
+
+	public void saveTrxs() {
+		for (Transaction t : Driver.transactions)
+			try {
+				TWrite.writeObject(t);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		sizeOfTransactions = Driver.transactions.size();
+		try {
+			sizeOutputStream.writeInt(sizeOfTransactions);
+			sizeOutputStream.writeChar('\n');
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void closeTransactionsFile() {
+		try {
+			if (TRead != null) {
+				TRead.close();
+				TFileInput.close();
+			}
+			if (TWrite != null) {
+				TFileOutput.close();
+				TWrite.flush();
+				TWrite.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void read() {
-		if(!initializeSize()) { // get the size of lists from the size.txt
+		if (!initializeSize()) { // get the size of lists from the size.txt
 			closeAllFiles();
 			return;
 		}
 		readPerson(); // read persons to the list
 		readBooks(); // read products to the list
+		readTrxs();
 		closeAllFiles(); // close the files and continue on with the program
 	}
 
@@ -323,6 +393,7 @@ public class files {
 		openAllFiles();
 		savePerson();
 		saveBooks();
+		saveTrxs();
 		closeAllFiles();
 	}
 
@@ -331,6 +402,7 @@ public class files {
 		openEmployeeFileOutputMode();
 		openProductsFile();
 		openClientsFile();
+		openTransactionsFile();
 	}
 
 	public void closeAllFiles() {
@@ -338,6 +410,7 @@ public class files {
 		closeEmployeeFile();
 		closeProductsFile();
 		closeClientsFile();
+		closeTransactionsFile();
 	}
 
 }
