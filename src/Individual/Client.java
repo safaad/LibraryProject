@@ -1,6 +1,7 @@
 package Individual;
 
 import java.util.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -34,6 +35,10 @@ public class Client extends Person {
 		id = username;
 		serial = username.charAt(0) - '0';
 
+	}
+	
+	public ArrayList<Books> getCart(){
+		return cart;
 	}
 
 	public static void setSerial(int serial2) {
@@ -84,20 +89,18 @@ public class Client extends Person {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void returnRented(ForRent b) {
-		ownedBooks.remove(b);
 		if (!b.getIsRented()) {
 			return;
 		}
-		if (b.getDeadline().after(new Date())) {
-			System.out.println("You are late but ok! It's " + (new Date()).getDay());
+		if (b.getDeadline().before(new Date())) {
+			System.out.println("You are late but ok! It's " + (LocalDate.now()).getDayOfMonth());
 		}
+		Driver.books.add(b);
+		ownedBooks.remove(b);
 		b.getReturned().add(new Date());
 		b.setIsRented(false);
-		ownedBooks.remove(b);
 		Driver.rentedBooks.remove(b);
-		Driver.books.add(b);
 	}
 
 	public String getId() {
@@ -149,12 +152,14 @@ public class Client extends Person {
 				flag = true;
 			}
 		}
-		if (!flag)
+		if (!flag) {
 			System.out.println("No rented books in cart");
+		}
 		System.out.println("----------------------\n");
 
 		flag = false;
 		System.out.println("List of bought books: ");
+		System.out.println("---------------------\n");
 		for (Books b2 : cart) {
 			if (b2 instanceof Sale) {
 				System.out.println(((Sale) b2).getTitle() + "\tprice " + ((Sale) b2).getPrice());
@@ -172,31 +177,24 @@ public class Client extends Person {
 	}
 	
 
-	public Transaction checkout() {
+	public Transaction checkout(){
 		Transaction trx = null;
 		@SuppressWarnings("deprecation")
 		int currentDate = Calendar.getInstance().getTime().getHours();
-		if (this.cart.size() == 0) {
-			System.out.println("Your cart is empty !!");
-			return null;
+		if(currentDate < 12 && currentDate > 0) {
+			trx = new Transaction(this, Driver.empAm);
 		}
-		if (Driver.empAm == null)
-			trx = new Transaction(this, Driver.empPm);
-		else if (Driver.empPm == null)
-			trx = new Transaction(this, Driver.empAm);
-		else if (currentDate < 12 && currentDate > 0) {
-			trx = new Transaction(this, Driver.empAm);
-		} else {
+		else {
 			trx = new Transaction(this, Driver.empPm);
 		}
-		for (int i = 0; i < cart.size(); i++) {
+		for(int i = 0; i < cart.size(); i++) {
 			trx.purchasedBooks.add(cart.get(i));
-			if (cart.get(i) instanceof Sale) {
+			if(cart.get(i) instanceof Sale) {
 				trx.setTotalMoney(purchase);
-			} else {
-				((ForRent) cart.get(i)).setIsRented(true);
+			}
+			else {
 				Driver.rentedBooks.add((ForRent) cart.get(i));
-
+				((ForRent) cart.get(i)).setIsRented(true);
 			}
 			Driver.books.remove(cart.get(i));
 			ownedBooks.add(cart.get(i));
