@@ -6,160 +6,176 @@ import java.util.Scanner;
 
 import BookStore.*;
 import Individual.*;
+
 public class Driver {
 	public static ArrayList<Client> clients = new ArrayList<Client>();
-	public static Employee empAm=null, empPm=null;
+	public static Employee empAm = null, empPm = null;
 	public static ArrayList<ForRent> rentedBooks = new ArrayList<ForRent>();
 	public static ArrayList<Books> books = new ArrayList<Books>();
 	public static ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-	public static Adminstrator admin=new Adminstrator("admin","admin");
+	public static Adminstrator admin = new Adminstrator("admin", "admin");
 	public static Scanner scan = new Scanner(System.in);
 	public static files LibraryFiles = new files();
 	
-	public static void PrintTransactions(){
+	public static boolean isExistsBook(int isbn) {
+		for(Books b : books)
+			if(b.getISBN() == isbn)
+				return true;
+		for(Books b : rentedBooks)
+			if(b.getISBN() == isbn)
+				return true;
+		return false;
+	}
+	
+	public static void PrintTransactions() {
 		boolean flag = false;
-		for(Transaction trx : transactions){
+		for (Transaction trx : transactions) {
 			System.out.println(trx);
 			System.out.println("########################");
-			flag=true;
+			flag = true;
 		}
-		if(!flag) {
+		if (!flag) {
 			System.out.println("No transactions yet!");
 		}
 	}
-	
-	public static void PrintListOfBooks(){
+
+	public static void PrintListOfBooks() {
 		boolean flag = false;
 		System.out.println("List of books available for renting: ");
-		for(Books b : books){
-			if(b instanceof ForRent){
-				System.out.println((ForRent)b);
+		for (Books b : books) {
+			if (b instanceof ForRent) {
+				System.out.println((ForRent) b);
 				flag = true;
 			}
 		}
-		if(flag)
+		if (flag)
 			System.out.println("----------------------\n");
 		else
 			System.out.println("No books available for rent");
 		flag = false;
 		System.out.println("List of books for sale: ");
-		for(Books b2 : books){
-			if(b2 instanceof Sale){
-				System.out.println((Sale)b2);
+		for (Books b2 : books) {
+			if (b2 instanceof Sale) {
+				System.out.println((Sale) b2);
 				flag = true;
 			}
 		}
-		if(flag)
+		if (flag)
 			System.out.println("----------------------\n");
 		else
 			System.out.println("No books available for sale");
 		System.out.println("End of list\n");
 	}
-	
-	public static void ChangeUsername(){
+
+	public static void ChangeUsername() {
 		String k = "";
 		System.out.println("Please enter new username: ");
 		k = scan.nextLine();
 		admin.setUsername(k);
 	}
-	
-	public static void ChangePassword(){
+
+	public static void ChangePassword() {
 		String k = "";
 		System.out.println("Please enter new password: ");
 		k = scan.nextLine();
 		admin.setPassword(k);
 	}
-	
-	public static void AddBook(){
+
+	public static void AddBook() {
 		String type = "", title = "", author = "";
 		int isbn = 0, targetAge = 0;
 		System.out.println("Please enter what type of Book (Rent/Sale)");
 		scan.nextLine();
 		type = scan.nextLine();
-		if(type.equalsIgnoreCase("rent")){
+		if (type.equalsIgnoreCase("rent")) {
 			System.out.println("Please enter title of the book: ");
 			title = scan.nextLine();
-			//scan.nextLine();
+			// scan.nextLine();
 			System.out.println("Please enter author: ");
 			author = scan.nextLine();
 			System.out.println("Please enter ISBN: ");
-			//scan.nextLine();
+			// scan.nextLine();
 			try {
 				isbn = scan.nextInt();
-			}catch(InputMismatchException e) {
+				if(isExistsBook(isbn)){
+					System.out.println("Please choose another isbn!");
+					return;
+				}
+					
+			} catch (InputMismatchException e) {
 				System.out.println("Wrong input!\n");
 				return;
 			}
 			System.out.println("Please enter target age: ");
-			//scan.nextLine();
+			// scan.nextLine();
 			targetAge = scan.nextInt();
-			if(books.contains(new ForRent(title, author, isbn, targetAge))){
+			if (books.contains(new ForRent(title, author, isbn, targetAge))) {
 				System.out.println("This book is already inside the library");
 				return;
 			}
 			books.add(new ForRent(title, author, isbn, targetAge));
-		}
-		else if(type.equalsIgnoreCase("Sale")) {
+		} else if (type.equalsIgnoreCase("Sale")) {
 			System.out.println("Please enter title of the book: ");
 			title = scan.nextLine();
-			//scan.nextLine();
+			// scan.nextLine();
 			System.out.println("Please enter author: ");
 			author = scan.nextLine();
 			System.out.println("Please enter ISBN: ");
-			//scan.nextLine();
+			// scan.nextLine();
 			isbn = scan.nextInt();
 			System.out.println("Please enter target age: ");
-			//scan.nextLine();
+			// scan.nextLine();
 			targetAge = scan.nextInt();
 			System.out.println("Please enter the price: ");
 			double price = scan.nextDouble();
 			System.out.println("Please enter the net price: ");
 			double netPrice = scan.nextDouble();
-			if(books.contains(new Sale(title, author, isbn, targetAge, price, netPrice))){
+			if (books.contains(new Sale(title, author, isbn, targetAge, price, netPrice))) {
 				System.out.println("This book is already inside the library");
 				return;
 			}
 			books.add(new Sale(title, author, isbn, targetAge, price, netPrice));
-		}
-		else
+		} else
 			return;
 	}
-	
-	public static void RemoveBook(){
-		int isbn= 0;
-		
+
+	public static void RemoveBook() {
+		int isbn = 0;
+
 		PrintListOfBooks();
 		System.out.println("What book do you want to remove?\nPlease enter the ISBN");
 		isbn = scan.nextInt();
-		if(getBookByISBN(isbn)==null ||!books.contains(getBookByISBN(isbn))){
+		if (getBookByISBN(isbn) == null || !books.contains(getBookByISBN(isbn))) {
 			System.out.println("Invalid book");
 			return;
 		}
 		books.remove(getBookByISBN(isbn));
 	}
+
 	public static void printCurrentlyRented() {
 		System.out.println("\n###########################################");
-		if(rentedBooks.size()==0) {
+		if (rentedBooks.size() == 0) {
 			System.out.println("No rented books");
 			return;
 		}
-		for(int i=0;i<rentedBooks.size();i++) {
-				System.out.println(rentedBooks.get(i));
+		for (int i = 0; i < rentedBooks.size(); i++) {
+			System.out.println(rentedBooks.get(i));
 		}
 		System.out.println("\n###########################################");
-	}	
-	public static void CreateEmployees(){
+	}
+
+	public static void CreateEmployees() {
 		String edit = "", fn = "", ln = "";
 		int a2;
 		double sal;
-		
-		if(empAm != null && empPm != null){
+
+		if (empAm != null && empPm != null) {
 			System.out.println("Employees already exist\nDo you want to edit them? (Yes/No)");
 			edit = scan.nextLine();
-			if(edit.equalsIgnoreCase("yes")){
+			if (edit.equalsIgnoreCase("yes")) {
 				System.out.println("Which one do you want to edit? (AM/PM)");
 				edit = scan.nextLine();
-				if(edit.equalsIgnoreCase("am")){
+				if (edit.equalsIgnoreCase("am")) {
 					System.out.println("Please enter first name: ");
 					fn = scan.nextLine();
 					System.out.println("Please enter last name: ");
@@ -170,8 +186,7 @@ public class Driver {
 					sal = scan.nextDouble();
 					empAm = new Employee(fn, ln, a2, sal);
 					System.out.println("Add success!");
-				}
-				else if (edit.equalsIgnoreCase("pm")){
+				} else if (edit.equalsIgnoreCase("pm")) {
 					System.out.println("Please enter first name: ");
 					fn = scan.nextLine();
 					System.out.println("Please enter last name: ");
@@ -182,19 +197,16 @@ public class Driver {
 					sal = scan.nextDouble();
 					empPm = new Employee(fn, ln, a2, sal);
 					System.out.println("Add success!");
-				}
-				else{
+				} else {
 					return;
 				}
-			}
-			else 
+			} else
 				return;
-		}
-		else{
+		} else {
 			System.out.println("Which one do you want to enter? (AM/PM)\n");
 			scan.nextLine();
 			edit = scan.nextLine();
-			if(edit.equalsIgnoreCase("am")){
+			if (edit.equalsIgnoreCase("am")) {
 				System.out.println("Please enter first name: ");
 				fn = scan.nextLine();
 				System.out.println("Please enter last name: ");
@@ -205,8 +217,7 @@ public class Driver {
 				sal = scan.nextDouble();
 				empAm = new Employee(fn, ln, a2, sal);
 				System.out.println("Add success!");
-			}
-			else if (edit.equalsIgnoreCase("pm")){
+			} else if (edit.equalsIgnoreCase("pm")) {
 				System.out.println("Please enter first name: ");
 				fn = scan.nextLine();
 				System.out.println("Please enter last name: ");
@@ -217,119 +228,123 @@ public class Driver {
 				sal = scan.nextDouble();
 				empPm = new Employee(fn, ln, a2, sal);
 				System.out.println("Add success!");
-			}
-			else{
+			} else {
 				return;
 			}
 		}
 	}
-	
-	public static void ChangeEmployee(){
-		String edit= "", fn = "", ln = "";
+
+	public static void ChangeEmployee() {
+		String edit = "", fn = "", ln = "";
 		double sal;
 		int a2;
-		
+
 		System.out.println("Which one do you want to edit? (AM/PM)");
 		scan.nextLine();
 		edit = scan.nextLine();
-		if(edit.equalsIgnoreCase("am")){
+		if (edit.equalsIgnoreCase("am")) {
 			System.out.println("Please enter first name: ");
 			fn = scan.nextLine();
-			scan.nextLine();
+			//scan.nextLine();
 			System.out.println("Please enter last name: ");
 			ln = scan.nextLine();
 			System.out.println("Please enter age: ");
-			scan.nextLine();
+			//scan.nextLine();
 			a2 = scan.nextInt();
 			System.out.println("Please enter salary: ");
-			scan.nextLine();
+			//scan.nextLine();
 			sal = scan.nextDouble();
 			empAm = new Employee(fn, ln, a2, sal);
-		}
-		else if (edit.equalsIgnoreCase("pm")){
+		} else if (edit.equalsIgnoreCase("pm")) {
 			System.out.println("Please enter first name: ");
 			fn = scan.nextLine();
-			scan.nextLine();
+			//scan.nextLine();
 			System.out.println("Please enter last name: ");
 			ln = scan.nextLine();
 			System.out.println("Please enter age: ");
-			scan.nextLine();
+			//scan.nextLine();
 			a2 = scan.nextInt();
 			System.out.println("Please enter salary: ");
-			scan.nextLine();
+			//scan.nextLine();
 			sal = scan.nextDouble();
 			empPm = new Employee(fn, ln, a2, sal);
 		}
 	}
-	public static void 	printListOfSaleBooks() {
-		System.out.println("\n###########################################");
-		if(nbOfSaleBooks()==0) {
+
+	public static void printListOfSaleBooks() {
+		System.out.println("List of available books:\n###########################################");
+		if (nbOfSaleBooks() == 0) {
 			System.out.println("No  books for sale");
 			return;
 		}
-		for(int i=0;i<books.size();i++) {
-			if(books.get(i) instanceof Sale)
+		for (int i = 0; i < books.size(); i++) {
+			if (books.get(i) instanceof Sale)
 				System.out.println(books.get(i));
 		}
 		System.out.println("\n###########################################");
 
 	}
-	public static void 	printListOfRentBooks() {
-		System.out.println("\n###########################################");
-		if(nbOfRentBooks()==0) {
+
+	public static void printListOfRentBooks() {
+		System.out.println("List of available books:\n###########################################");
+		if (nbOfRentBooks() == 0) {
 			System.out.println("No books for rent");
 			return;
 		}
-		for(int i=0;i<books.size();i++) {
-			if(books.get(i) instanceof ForRent)
+		for (int i = 0; i < books.size(); i++) {
+			if (books.get(i) instanceof ForRent)
 				System.out.println(books.get(i));
 		}
 		System.out.println("\n###########################################");
 
 	}
+
 	public static int nbOfSaleBooks() {
-		int c=0;
-		for(int i=0;i<books.size();i++) {
-			if(books.get(i) instanceof Sale)
+		int c = 0;
+		for (int i = 0; i < books.size(); i++) {
+			if (books.get(i) instanceof Sale)
 				c++;
 		}
 		return c;
 	}
+
 	public static int nbOfRentBooks() {
-		int c=0;
-		for(int i=0;i<books.size();i++) {
-			if(books.get(i) instanceof ForRent)
+		int c = 0;
+		for (int i = 0; i < books.size(); i++) {
+			if (books.get(i) instanceof ForRent)
 				c++;
 		}
 		return c;
 	}
+
 	public static void PrintEmployees() {
 		System.out.println("\n###########################################");
-		if(empAm == null && empPm == null) {
+		if (empAm == null && empPm == null) {
 			System.out.println("No employees are currently employed!\n");
 			return;
-		}
-		else if(empAm == null && empPm != null)
+		} else if (empAm == null && empPm != null)
 			System.out.println("PM Shift:\n" + empPm + "\n");
-		if(empPm == null && empAm != null)
+		if (empPm == null && empAm != null)
 			System.out.println("AM Shift:\n" + empAm + "\n");
 		else
-			System.out.println("AM Shift:\n" +empAm + "\n\nPM Shift:\n" + empPm + "\n");
+			System.out.println("AM Shift:\n" + empAm + "\n\nPM Shift:\n" + empPm + "\n");
 		System.out.println("\n###########################################");
 
 	}
+
 	public static void PrintListOfClients() {
 		System.out.println("\n###########################################");
-		if(clients.size()==0){
-			System.out.println("No employees are currently employed!\n");
+		if (clients.size() == 0) {
+			System.out.println("No customers!\n");
 			return;
 		}
-		for(int i=0;i<clients.size();i++) {
+		for (int i = 0; i < clients.size(); i++) {
 			System.out.println(clients.get(i));
 		}
 		System.out.println("\n###########################################");
 	}
-	public static void  AdminLogin() {
+
+	public static void AdminLogin() {
 		int choice = 0;
 		String user;
 		boolean login = true;
@@ -337,7 +352,7 @@ public class Driver {
 		System.out.println("Username:\t");
 		scan.nextLine();
 		user = scan.nextLine();
-		
+
 		if (admin.getUsername().equals(user)) {
 			int i = 4;
 			String s;
@@ -346,22 +361,23 @@ public class Driver {
 				s = scan.nextLine();
 				i--;
 			} while (i > 0 && !admin.confirmPassword(s));
-			if (!admin.confirmPassword(s)){
+			if (!admin.confirmPassword(s)) {
 				System.out.println("Logging in unsuccessfull!\nReturning to main menu\n");
 				login = false;
 				return;
 			}
-		} else{
+		} else {
 			System.out.println("Wrong username or password.");
 			login = false;
 			return;
 		}
-		
-		while(login){
-			System.out.println("1-\tCreate Employees\n2-\tAdd books\n3-\tRemove books\n4-\tChange username\n5-\tChange password\n6-\tEdit employee\n7-\tShow transactions\n8-\tShow employees\n9-\tShow list of books\n"
-					+"10-\tShow list of clients\n"+"11-\tshow list of books inRent\n"+ "0-\tLogout");
+
+		while (login) {
+			System.out.println(
+					"1-\tCreate Employees\n2-\tAdd books\n3-\tRemove books\n4-\tChange username\n5-\tChange password\n6-\tEdit employee\n7-\tShow transactions\n8-\tShow employees\n9-\tShow list of books\n"
+							+ "10-\tShow list of clients\n" + "11-\tshow list of books inRent\n" + "0-\tLogout");
 			choice = scan.nextInt();
-			switch(choice){
+			switch (choice) {
 			case 0:
 				login = false;
 				System.out.println("Successfully logged out!\n--------------------\n");
@@ -404,8 +420,8 @@ public class Driver {
 			}
 		}
 	}
-	
-	public static Client ClientSignUp(){
+
+	public static Client ClientSignUp() {
 		System.out.println("Please enter first name: ");
 		String fn = scan.nextLine();
 		System.out.println("Please enter last name: ");
@@ -416,19 +432,19 @@ public class Driver {
 		clients.add(c);
 		return c;
 	}
-	
-	public static Client ClientLogin(){
+
+	public static Client ClientLogin() {
 		String id = "", cancer = "";
 		Client c = null;
 		
-		System.out.println("Please enter your id: ");
+		System.out.println("Please enter your id (Enter any key to create an account): ");
 		scan.nextLine();
 		id = scan.nextLine();
-		if(getClientById(id) == null){
+		if (getClientById(id) == null) {
 			System.out.println("User doesn't exist!\nDo you want to create a new one? (Yes/No)");
-			//scan.nextLine();
+			// scan.nextLine();
 			cancer = scan.nextLine();
-			if(cancer.equalsIgnoreCase("yes")){
+			if (cancer.equalsIgnoreCase("yes")) {
 				c = ClientSignUp();
 				System.out.println("You successfully signed up!");
 			}
@@ -437,57 +453,70 @@ public class Driver {
 		System.out.println("You are successfully logged in!");
 		return getClientById(id);
 	}
-	
-	public static void ClientPage(){
+
+	public static void ClientPage() {
 		Client c = null;
 		int choice = 0;
 		boolean login = true;
 		int isbn = 0;
-		
+
 		c = ClientLogin();
-		if(c == null){
+		if (c == null) {
 			System.out.println("Not logged in!");
 			return;
 		}
-		System.out.println("Hello there beloved customer \n" + c.getFirstName() + " " + c.getLastName() + "\nYour ID: " + c.getId());
-		while(login){
-			System.out.println("1-\tBuy a book\n2-\tRent a book\n3-\tShow list of books\n4-\tShow owned books\n5-\tShow list of cart\n6-\tCheckout\n"
-					+"7-\tReturn rented book\n"+ "0-\tLogout");
+		System.out.println("Hello there beloved customer \n" + c.getFirstName() + " " + c.getLastName() + "\nYour ID: "
+				+ c.getId());
+		while (login) {
+			System.out.println(
+					"1-\tBuy a book\n2-\tRent a book\n3-\tShow list of books\n4-\tShow owned books\n5-\tShow list of cart\n6-\tCheckout\n"
+							+ "7-\tReturn rented book\n" + "0-\tLogout");
 			choice = scan.nextInt();
-			switch(choice){
+			switch (choice) {
 			case 0:
+				if(!c.getCart().isEmpty()) {
+					System.out.println("Cart is not empty! Are you sure you want to log out? (Yes/No)");
+					scan.nextLine();
+					String yesORno = scan.nextLine();
+					if(yesORno.equalsIgnoreCase("No"))
+						break;
+					else {
+						System.out.println("Your cart is cleared!\n");
+						c.getCart().clear();
+					}
+				}
 				login = false;
 				System.out.println("Successfully logged out!\n--------------------\n");
 				break;
 			case 1:
-				if( nbOfSaleBooks()==0) {
-					System.out.println("no books available for sale yet !!");
+				if (nbOfSaleBooks() == 0) {
+					System.out.println("No books available for sale yet !!");
 					break;
 				}
 				printListOfSaleBooks();
 
 				System.out.println("Please enter ISBN: ");
 				isbn = scan.nextInt();
-				if(getBookByISBN(isbn)==null || !books.contains(getBookByISBN(isbn))){
+				if (getBookByISBN(isbn) == null || !books.contains(getBookByISBN(isbn))) {
 					System.out.println("Invalid book");
 					return;
 				}
-				c.addToCartSale((Sale)getBookByISBN(isbn));
+				c.addToCartSale((Sale) getBookByISBN(isbn));
 				System.out.println("Successfully added to cart!");
 				break;
 			case 2:
-				if( nbOfSaleBooks()==0) {
-					System.out.println("no books available for rent yet !!");
+				if (nbOfRentBooks() == 0) {
+					System.out.println("No books available for rent yet !!");
 					break;
 				}
 				printListOfRentBooks();
 				System.out.println("Please enter ISBN: ");
 				isbn = scan.nextInt();
-				if(getBookByISBN(isbn)==null || !books.contains(getBookByISBN(isbn))){
+				if (getBookByISBN(isbn) == null || !books.contains(getBookByISBN(isbn))) {
 					System.out.println("Invalid book");
 					return;
 				}
-				c.addToCartRent((ForRent)getBookByISBN(isbn));
+				c.addToCartRent((ForRent) getBookByISBN(isbn));
 				System.out.println("Successfully added to cart!");
 				break;
 			case 3:
@@ -505,15 +534,16 @@ public class Driver {
 				transactions.add(t);
 				break;
 			case 7:
-				if(rentedBooks.size()==0) {
+				if (rentedBooks.size() == 0) {
 					System.out.println("No Books to return");
 					break;
 				}
-				System.out.println("**************************\nlist of books that need to be returned are \n**************************");
+				System.out.println(
+						"**************************\nlist of books that need to be returned are \n**************************");
 				printCurrentlyRented();
-				System.out.println("enter the ISBN of the book you need to return : ");
-				isbn=scan.nextInt();
-				if(getBookByISBNRented(isbn)==null) {
+				System.out.println("Enter the ISBN of the book you need to return : ");
+				isbn = scan.nextInt();
+				if (getBookByISBNRented(isbn) == null) {
 					System.out.println("ivalid isbn ");
 					break;
 				}
@@ -525,7 +555,7 @@ public class Driver {
 			}
 		}
 	}
-	
+
 	public static Books getBookByTitle(String title) {
 		for (int i = 0; i < books.size(); i++) {
 			if (books.get(i).getTitle().equals(title))
@@ -549,6 +579,7 @@ public class Driver {
 		}
 		return null;
 	}
+
 	public static Employee getEmployeeById(String id) {
 
 		if (empAm.getID().equals(id))
@@ -566,7 +597,7 @@ public class Driver {
 		}
 		return null;
 	}
-	
+
 	public static void main(String[] args) {
 		System.out.println("** Hello and Welcome! **");
 		int choice;
@@ -584,11 +615,11 @@ public class Driver {
 				AdminLogin();
 				break;
 			case 2:
-				if(empAm==null && empPm==null) {
+				if (empAm == null && empPm == null) {
 					System.out.println("no employees to serve !!");
 					break;
 				}
-					
+
 				ClientPage();
 				break;
 			}
