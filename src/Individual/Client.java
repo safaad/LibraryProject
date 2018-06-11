@@ -79,9 +79,8 @@ public class Client extends Person {
 			expected.setHours(cur.getHours() + 24 * 3);
 			b.setDeadline(expected);
 			cart.add(b);
-			b.getRented().add(cur);
-			Driver.books.remove(b);
-		
+			b.getRented().add(cur);//arraylist of date
+
 		}
 	}
 
@@ -96,6 +95,7 @@ public class Client extends Person {
 		}
 		b.getReturned().add(new Date());
 		b.setIsRented(false);
+		ownedBooks.remove(b);
 		Driver.rentedBooks.remove(b);
 		Driver.books.add(b);
 	}
@@ -138,7 +138,7 @@ public class Client extends Person {
 			System.out.println("Your cart is empty :)");
 			return;
 		}
-		System.out.println("----------------------\n");
+		System.out.println("################################################\n");
 
 		System.out.println("List of books rented: ");
 		System.out.println("---------------------\n");
@@ -149,9 +149,7 @@ public class Client extends Person {
 				flag = true;
 			}
 		}
-		if (flag)
-			System.out.println("----------------------\n");
-		else
+		if (!flag)
 			System.out.println("No rented books in cart");
 		System.out.println("----------------------\n");
 
@@ -159,20 +157,20 @@ public class Client extends Person {
 		System.out.println("List of bought books: ");
 		for (Books b2 : cart) {
 			if (b2 instanceof Sale) {
-				System.out.println(((Sale) b2).getTitle() +"\tprice " +((Sale) b2).getPrice());
+				System.out.println(((Sale) b2).getTitle() + "\tprice " + ((Sale) b2).getPrice());
 				flag = true;
 			}
 		}
-		if (flag)
-			System.out.println("----------------------\n");
-		else
+		if (!flag)
 			System.out.println("No bought books in cart");
+
 		System.out.println("----------------------\n");
 
 		System.out.println("End of list\n");
-		System.out.println("----------------------\n");
+		System.out.println("################################################\n");
 
 	}
+	
 
 	public Transaction checkout() {
 		Transaction trx = null;
@@ -195,11 +193,12 @@ public class Client extends Person {
 			trx.purchasedBooks.add(cart.get(i));
 			if (cart.get(i) instanceof Sale) {
 				trx.setTotalMoney(purchase);
-				Driver.books.remove(i);
 			} else {
-				Driver.rentedBooks.add((ForRent) cart.get(i));
 				((ForRent) cart.get(i)).setIsRented(true);
+				Driver.rentedBooks.add((ForRent) cart.get(i));
+
 			}
+			Driver.books.remove(cart.get(i));
 			ownedBooks.add(cart.get(i));
 			cart.remove(i);
 		}

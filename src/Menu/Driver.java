@@ -12,7 +12,6 @@ public class Driver {
 	public static ArrayList<ForRent> rentedBooks = new ArrayList<ForRent>();
 	public static ArrayList<Books> books = new ArrayList<Books>();
 	public static ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-	public Integer k;
 	public static Adminstrator admin=new Adminstrator("admin","admin");
 	public static Scanner scan = new Scanner(System.in);
 	public static files LibraryFiles = new files();
@@ -31,7 +30,7 @@ public class Driver {
 	
 	public static void PrintListOfBooks(){
 		boolean flag = false;
-		System.out.println("List of books already rented: ");
+		System.out.println("List of books available for renting: ");
 		for(Books b : books){
 			if(b instanceof ForRent){
 				System.out.println((ForRent)b);
@@ -453,7 +452,7 @@ public class Driver {
 		System.out.println("Hello there beloved customer \n" + c.getFirstName() + " " + c.getLastName() + "\nYour ID: " + c.getId());
 		while(login){
 			System.out.println("1-\tBuy a book\n2-\tRent a book\n3-\tShow list of books\n4-\tShow owned books\n5-\tShow list of cart\n6-\tCheckout\n"
-					+ "0-\tLogout");
+					+"7-\tReturn rented book\n"+ "0-\tLogout");
 			choice = scan.nextInt();
 			switch(choice){
 			case 0:
@@ -505,6 +504,24 @@ public class Driver {
 				System.out.println(t + "-----------------------------------------------------------");
 				transactions.add(t);
 				break;
+			case 7:
+				if(rentedBooks.size()==0) {
+					System.out.println("No Books to return");
+					break;
+				}
+				System.out.println("**************************\nlist of books that need to be returned are \n**************************");
+				printCurrentlyRented();
+				System.out.println("enter the ISBN of the book you need to return : ");
+				isbn=scan.nextInt();
+				if(getBookByISBNRented(isbn)==null) {
+					System.out.println("ivalid isbn ");
+					break;
+				}
+				c.returnRented(getBookByISBNRented(isbn));
+				System.out.println("Successfully returned !!\n");
+				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -525,6 +542,13 @@ public class Driver {
 		return null;
 	}
 
+	public static ForRent getBookByISBNRented(int ISBN) {
+		for (int i = 0; i < rentedBooks.size(); i++) {
+			if (rentedBooks.get(i).getISBN() == ISBN)
+				return rentedBooks.get(i);
+		}
+		return null;
+	}
 	public static Employee getEmployeeById(String id) {
 
 		if (empAm.getID().equals(id))
@@ -542,7 +566,7 @@ public class Driver {
 		}
 		return null;
 	}
-
+	
 	public static void main(String[] args) {
 		System.out.println("** Hello and Welcome! **");
 		int choice;
