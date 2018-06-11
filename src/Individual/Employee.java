@@ -1,5 +1,6 @@
 package Individual;
 
+
 public class Employee extends Person {
 	/**
 	 * 
@@ -13,15 +14,8 @@ public class Employee extends Person {
 		super(first, last, a);
 		id = "" + this.fn.charAt(0) + this.ln.charAt(0) + serial;
 		//id = "" + serial + this.fn.charAt(0) + this.fn.charAt(1) + "_" + this.ln.charAt(0) + this.ln.charAt(1);
+		this.Salary=Salary;
 		serial++;
-	}
-
-	public Employee(String first, String last, int a, double Salary, String username) {
-		super(first, last, a);
-		id = username;
-		this.Salary = Salary;
-		serial = username.charAt(0) - '0';
-
 	}
 	
 	public static void setSerial(int serial2) {
@@ -40,6 +34,6 @@ public class Employee extends Person {
 		this.id = id;
 	}
 	public String toString() {
-		return super.toString() + "\nEmployee ID: " + id + "\nSalary: " + Salary;
+		return super.toString() + "Employee ID: " + id + "\nSalary: " + Salary;
 	}
 }

@@ -22,6 +22,6 @@ public class Sale extends Books {
 	}
 
 	public String toString() {
-		return super.toString() + "\n";
+		return super.toString() + "\t  price : "+ price +" $$\n";
 	}
 }

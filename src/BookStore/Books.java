@@ -35,9 +35,9 @@ public class Books implements Serializable{
 	}
 
 	public String toString() {
-		String s = title;
-		return s += " :\n\t" + author + "\n\t" + ISBN + "\t" + targetsAge
-				+ "+ .\n";
+		String s ="\t^^ " +title+" ^^";
+		return s += " :\n\t  author : " + author + "\n\t  ISBN : " + ISBN + "\n\t  target age : " + targetsAge
+				+ "+\n";
 	}
 
 }

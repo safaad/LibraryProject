@@ -24,7 +24,6 @@ public class Client extends Person {
 	public Client(String first, String last, int a) {
 		super(first, last, a);
 		id = "" + this.fn.charAt(0) + this.ln.charAt(0) + serial;
-		//id = "" + serial + this.fn.charAt(0) + this.fn.charAt(1) + "_" + this.ln.charAt(0) + this.ln.charAt(1);
 		serial++;
 		ownedBooks = new ArrayList<Books>();
 		cart = new ArrayList<Books>();
@@ -36,11 +35,11 @@ public class Client extends Person {
 		serial = username.charAt(0) - '0';
 
 	}
-	
+
 	public static void setSerial(int serial2) {
 		serial = serial2;
 	}
-	
+
 	public static int getSerial() {
 		return serial;
 	}
@@ -48,7 +47,7 @@ public class Client extends Person {
 	public double addToCartSale(Sale b) {
 		double p;
 		cart.add(b);
-		if (b.getTarget() < age) {
+		if (b.getTarget() > age) {
 			System.out.println("Inappropriate age\n");
 			return 0;
 		}
@@ -68,17 +67,25 @@ public class Client extends Person {
 		return p;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void addToCartRent(ForRent b) {
 		Date cur = new Date();
 		Date expected = new Date();
+		if (b.getTarget() > age) {
+			System.out.println("Inappropriate age\n");
+			return;
+		}
 		if (!b.getIsRented()) {
 			expected.setHours(cur.getHours() + 24 * 3);
 			b.setDeadline(expected);
 			cart.add(b);
 			b.getRented().add(cur);
+			Driver.books.remove(b);
+		
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void returnRented(ForRent b) {
 		ownedBooks.remove(b);
 		if (!b.getIsRented()) {
@@ -89,88 +96,107 @@ public class Client extends Person {
 		}
 		b.getReturned().add(new Date());
 		b.setIsRented(false);
+		Driver.rentedBooks.remove(b);
+		Driver.books.add(b);
 	}
 
 	public String getId() {
 		return id;
 	}
-	
-	public void PrintListOfOwnedBooks(){
+
+	public void PrintListOfOwnedBooks() {
 		boolean flag = false;
 		System.out.println("List of books rented: ");
-		for(Books b : ownedBooks){
-			if(b instanceof ForRent){
-				System.out.println((ForRent)b);
+		for (Books b : ownedBooks) {
+			if (b instanceof ForRent) {
+				System.out.println((ForRent) b);
 				flag = true;
 			}
 		}
-		if(flag)
+		if (flag)
 			System.out.println("----------------------\n");
 		else
 			System.out.println("No rented books");
 		flag = false;
 		System.out.println("List of bought books: ");
-		for(Books b2 : ownedBooks){
-			if(b2 instanceof Sale){
-				System.out.println((Sale)b2);
+		for (Books b2 : ownedBooks) {
+			if (b2 instanceof Sale) {
+				System.out.println((Sale) b2);
 				flag = true;
 			}
 		}
-		if(flag)
+		if (flag)
 			System.out.println("----------------------\n");
 		else
 			System.out.println("No bought books");
 		System.out.println("End of list\n");
 	}
-	
-	public void PrintCart(){
+
+	public void PrintCart() {
 		boolean flag = false;
-		if(cart == null){
+		if (cart == null) {
 			System.out.println("Your cart is empty :)");
 			return;
 		}
+		System.out.println("----------------------\n");
+
 		System.out.println("List of books rented: ");
-		for(Books b : cart){
-			if(b instanceof ForRent){
-				System.out.println((ForRent)b);
+		System.out.println("---------------------\n");
+
+		for (Books b : cart) {
+			if (b instanceof ForRent) {
+				System.out.println(((ForRent) b).getTitle());
 				flag = true;
 			}
 		}
-		if(flag)
+		if (flag)
 			System.out.println("----------------------\n");
 		else
 			System.out.println("No rented books in cart");
+		System.out.println("----------------------\n");
+
 		flag = false;
 		System.out.println("List of bought books: ");
-		for(Books b2 : cart){
-			if(b2 instanceof Sale){
-				System.out.println((Sale)b2);
+		for (Books b2 : cart) {
+			if (b2 instanceof Sale) {
+				System.out.println(((Sale) b2).getTitle() +"\tprice " +((Sale) b2).getPrice());
 				flag = true;
 			}
 		}
-		if(flag)
+		if (flag)
 			System.out.println("----------------------\n");
 		else
 			System.out.println("No bought books in cart");
+		System.out.println("----------------------\n");
+
 		System.out.println("End of list\n");
+		System.out.println("----------------------\n");
+
 	}
 
-	public Transaction checkout(){
+	public Transaction checkout() {
 		Transaction trx = null;
+		@SuppressWarnings("deprecation")
 		int currentDate = Calendar.getInstance().getTime().getHours();
-		if(currentDate < 12 && currentDate > 0) {
-			trx = new Transaction(this, Driver.empAm);
+		if (this.cart.size() == 0) {
+			System.out.println("Your cart is empty !!");
+			return null;
 		}
-		else {
+		if (Driver.empAm == null)
+			trx = new Transaction(this, Driver.empPm);
+		else if (Driver.empPm == null)
+			trx = new Transaction(this, Driver.empAm);
+		else if (currentDate < 12 && currentDate > 0) {
+			trx = new Transaction(this, Driver.empAm);
+		} else {
 			trx = new Transaction(this, Driver.empPm);
 		}
-		for(int i = 0; i < cart.size(); i++) {
+		for (int i = 0; i < cart.size(); i++) {
 			trx.purchasedBooks.add(cart.get(i));
-			if(cart.get(i) instanceof Sale) {
+			if (cart.get(i) instanceof Sale) {
 				trx.setTotalMoney(purchase);
 				Driver.books.remove(i);
-			}
-			else {
+			} else {
 				Driver.rentedBooks.add((ForRent) cart.get(i));
 				((ForRent) cart.get(i)).setIsRented(true);
 			}
@@ -181,8 +207,8 @@ public class Client extends Person {
 		flag10 = flag20 = false;
 		return trx;
 	}
-	
+
 	public String toString() {
-		return super.toString() + "Customer ID: " + id;
+		return super.toString() + "Customer ID: " + id + "\n---------------------";
 	}
 }

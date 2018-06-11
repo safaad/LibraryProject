@@ -1,9 +1,14 @@
 package BookStore;
 
 import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class ForRent extends Books {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<Date> Rented;
 	private ArrayList<Date> Returned;
 	private Date Deadline;
