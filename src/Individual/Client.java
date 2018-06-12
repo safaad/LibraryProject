@@ -94,7 +94,7 @@ public class Client extends Person {
 			return;
 		}
 		if (b.getDeadline().before(new Date())) {
-			System.out.println("You are late but ok! It's " + (LocalDate.now()).getDayOfMonth());
+			System.out.println("Expected Date: " + b.getDeadline() + "\nYou are late! It's " + LocalDate.now().getDayOfMonth() + " of " + LocalDate.now().getMonth());
 		}
 		Driver.books.add(b);
 		ownedBooks.remove(b);
