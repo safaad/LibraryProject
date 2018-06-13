@@ -16,17 +16,17 @@ public class Driver {
 	public static Adminstrator admin = new Adminstrator("admin", "admin");
 	public static Scanner scan = new Scanner(System.in);
 	public static files LibraryFiles = new files();
-	
+
 	public static boolean isExistsBook(int isbn) {
-		for(Books b : books)
-			if(b.getISBN() == isbn)
+		for (Books b : books)
+			if (b.getISBN() == isbn)
 				return true;
-		for(Books b : rentedBooks)
-			if(b.getISBN() == isbn)
+		for (Books b : rentedBooks)
+			if (b.getISBN() == isbn)
 				return true;
 		return false;
 	}
-	
+
 	public static void PrintTransactions() {
 		boolean flag = false;
 		for (Transaction trx : transactions) {
@@ -97,11 +97,11 @@ public class Driver {
 			// scan.nextLine();
 			try {
 				isbn = scan.nextInt();
-				if(isExistsBook(isbn)){
+				if (isExistsBook(isbn)) {
 					System.out.println("Please choose another isbn!");
 					return;
 				}
-					
+
 			} catch (InputMismatchException e) {
 				System.out.println("Wrong input!\n");
 				return;
@@ -245,27 +245,27 @@ public class Driver {
 		if (edit.equalsIgnoreCase("am")) {
 			System.out.println("Please enter first name: ");
 			fn = scan.nextLine();
-			//scan.nextLine();
+			// scan.nextLine();
 			System.out.println("Please enter last name: ");
 			ln = scan.nextLine();
 			System.out.println("Please enter age: ");
-			//scan.nextLine();
+			// scan.nextLine();
 			a2 = scan.nextInt();
 			System.out.println("Please enter salary: ");
-			//scan.nextLine();
+			// scan.nextLine();
 			sal = scan.nextDouble();
 			empAm = new Employee(fn, ln, a2, sal);
 		} else if (edit.equalsIgnoreCase("pm")) {
 			System.out.println("Please enter first name: ");
 			fn = scan.nextLine();
-			//scan.nextLine();
+			// scan.nextLine();
 			System.out.println("Please enter last name: ");
 			ln = scan.nextLine();
 			System.out.println("Please enter age: ");
-			//scan.nextLine();
+			// scan.nextLine();
 			a2 = scan.nextInt();
 			System.out.println("Please enter salary: ");
-			//scan.nextLine();
+			// scan.nextLine();
 			sal = scan.nextDouble();
 			empPm = new Employee(fn, ln, a2, sal);
 		}
@@ -377,15 +377,13 @@ public class Driver {
 					"1-\tCreate Employees\n2-\tAdd books\n3-\tRemove books\n4-\tChange username\n5-\tChange password\n6-\tEdit employee\n7-\tShow transactions\n8-\tShow employees\n9-\tShow list of books\n"
 							+ "10-\tShow list of clients\n" + "11-\tshow list of books inRent\n" + "0-\tLogout");
 			try {
-			choice = scan.nextInt();
-			}
-			catch(Exception e)
-			{
+				choice = scan.nextInt();
+			} catch (Exception e) {
 				System.out.println("Invalid Input");
-				 scan.nextLine();
+				scan.nextLine();
 				break;
 			}
-			
+
 			switch (choice) {
 			case 0:
 				login = false;
@@ -445,7 +443,7 @@ public class Driver {
 	public static Client ClientLogin() {
 		String id = "", cancer = "";
 		Client c = null;
-		
+
 		System.out.println("Please enter your id (Enter any key to create an account): ");
 		scan.nextLine();
 		id = scan.nextLine();
@@ -483,11 +481,11 @@ public class Driver {
 			choice = scan.nextInt();
 			switch (choice) {
 			case 0:
-				if(!c.getCart().isEmpty()) {
+				if (!c.getCart().isEmpty()) {
 					System.out.println("Cart is not empty! Are you sure you want to log out? (Yes/No)");
 					scan.nextLine();
 					String yesORno = scan.nextLine();
-					if(yesORno.equalsIgnoreCase("No"))
+					if (yesORno.equalsIgnoreCase("No"))
 						break;
 					else {
 						System.out.println("Your cart is cleared!\n");
@@ -614,12 +612,11 @@ public class Driver {
 		LibraryFiles.read();
 		while (running) {
 			System.out.print("Login as a\n(1) Admin\t(2) Client\t(0)To Terminate : ");
-		try {	
-		choice = scan.nextInt(); }
-		catch(Exception e)
-		{
-			System.out.println("Invalid Input");
-		}
+			try {
+				choice = scan.nextInt();
+			} catch (Exception e) {
+				System.out.println("Invalid Input");
+			}
 
 			switch (choice) {
 			case 0:

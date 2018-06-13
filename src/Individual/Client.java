@@ -190,7 +190,7 @@ public class Client extends Person {
 		for(int i = 0; i < cart.size(); i++) {
 			trx.purchasedBooks.add(cart.get(i));
 			if(cart.get(i) instanceof Sale) {
-				trx.setTotalMoney(purchase);
+				trx.setTotalMoney(((Sale)cart.get(i)).getPrice());
 			}
 			else {
 				Driver.rentedBooks.add((ForRent) cart.get(i));

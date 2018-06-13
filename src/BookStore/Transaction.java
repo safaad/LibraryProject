@@ -63,7 +63,7 @@ public class Transaction implements Serializable {
 			}
 		}
 		s += "---------------------------------\n";
-		s += "Total amount paid: " + totalMoney + "\n";
+		s += "Total amount paid: " + totalMoney + "$\n";
 		if (customer.flag10) {
 			s += "Total discount: 10%\n";
 		} else if (customer.flag20)
