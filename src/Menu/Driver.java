@@ -376,7 +376,16 @@ public class Driver {
 			System.out.println(
 					"1-\tCreate Employees\n2-\tAdd books\n3-\tRemove books\n4-\tChange username\n5-\tChange password\n6-\tEdit employee\n7-\tShow transactions\n8-\tShow employees\n9-\tShow list of books\n"
 							+ "10-\tShow list of clients\n" + "11-\tshow list of books inRent\n" + "0-\tLogout");
+			try {
 			choice = scan.nextInt();
+			}
+			catch(Exception e)
+			{
+				System.out.println("Invalid Input");
+				 scan.nextLine();
+				break;
+			}
+			
 			switch (choice) {
 			case 0:
 				login = false;
@@ -600,12 +609,17 @@ public class Driver {
 
 	public static void main(String[] args) {
 		System.out.println("** Hello and Welcome! **");
-		int choice;
+		int choice = 0;
 		boolean running = true;
 		LibraryFiles.read();
 		while (running) {
 			System.out.print("Login as a\n(1) Admin\t(2) Client\t(0)To Terminate : ");
-			choice = scan.nextInt();
+		try {	
+		choice = scan.nextInt(); }
+		catch(Exception e)
+		{
+			System.out.println("Invalid Input");
+		}
 
 			switch (choice) {
 			case 0:
